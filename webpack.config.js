@@ -7,7 +7,38 @@ module.exports = {
     mode: 'development',
     devtool: 'none',
     module: {
-        rules: [],
+        rules: [{
+            oneOf: [{
+                resourceQuery: /http/,
+                loader: 'file-loader',
+                options: {
+                    name: 'images/[name].[ext]',
+                },
+            }, {
+                test: /\.jpg$/,
+                loader: 'url-loader',
+                options: {
+                    limit: 15000,
+                    name: 'images/[name].[ext]',
+                },
+            }],
+        }, {
+            test: /\.svg$/,
+            oneOf: [{
+                resourceQuery: /inline/,
+                loader: 'svg-inline-loader',
+            }, {
+                test: /\.svg$/,
+                loader: 'svg-url-loader',
+                options: {
+                    limit: 15000,
+                    name: 'images/[name].[ext]',
+                },
+            }],
+        }, {
+            test: /\.(jpg|svg)$/,
+            loader: 'image-webpack-loader',
+        }],
     },
     plugins: [
         new HtmlWebpackPlugin({
@@ -19,66 +50,3 @@ module.exports = {
         }),
     ],
 };
-
-
-
-
-// Resources
-// rules: [{
-//     test: /\.jpg$/,
-//     loader: 'file-loader',
-//        options: {
-//            name: 'images/[name].[ext]',
-//        },
-// }, {
-//     test: /\.jpg$/,
-//     loader: 'url-loader',
-//     options: {
-//         limit: 15000,
-//         name: 'images/[name].[ext]',
-//     },
-// }, {
-//     test: /\.jpg$/,
-//     oneOf: [{
-//         resourceQuery: /http/,
-//         use: {
-//             loader: 'file-loader',
-//             options: {
-//                 name: 'images/[name].[ext]',
-//             },
-//         },
-//     }, {
-//         test: /\.jpg$/,
-//         loader: 'url-loader',
-//         options: {
-//             limit: 15000,
-//             name: 'images/[name].[ext]',
-//         },
-//     }],
-// }, {
-//     test: /\.svg$/,
-//     loader: 'svg-url-loader',
-//     options: {
-//         limit: 15000,
-//     },
-// }, {
-//     test: /\.svg$/,
-//     loader: 'svg-inline-loader'
-// }, {
-//     test: /\.svg$/,
-//     oneOf: [{
-//         resourceQuery: /inline/,
-//         use: {
-//             loader: 'svg-inline-loader',
-//         },
-//     }, {
-//         test: /\.svg$/,
-//         loader: 'svg-url-loader',
-//         options: {
-//             limit: 15000,
-//         },
-//     }],
-// }, {
-//     test: /\.(jpg|svg)$/,
-//     loader: 'image-webpack-loader',
-// }],
